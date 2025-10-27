@@ -4,9 +4,10 @@ from datetime import datetime
 import pytz
 import time
 import os
+from prefect import task
 
 
-#Funções para baixar os dados da API e salvar em csv
+#Task para baixar os dados da API e salvar em csv com função auxiliar
 def download_data(i):
     try:
         response = requests.get("https://dados.mobilidade.rio/gps/brt")
@@ -17,7 +18,7 @@ def download_data(i):
     else:
         print(f"Download da iteração {i} realizado com sucesso")
         return response.json()
-
+@task
 def api_to_csv():
     for i in range(1,5):
         print(f"Começando iteração {i}...")
@@ -28,5 +29,3 @@ def api_to_csv():
         df.to_csv("brt-dados.csv", mode='a', index=False, header=not file_exists)
         print(f"Iteração {i} concluída")
         time.sleep(10)
-        
-api_to_csv()
