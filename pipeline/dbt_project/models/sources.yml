@@ -3,14 +3,14 @@ sources:
     tables:
       - name: brt_bronze
         external:
-          location: "gs://brt-pipeline-data/date=*/brt-dados-*.csv"
+          location: "gs://brt-pipeline-data/*.csv"
           options:
-            hive_partition_uri_prefix: 'gs://brt-pipeline-data/' 
+            #hive_partition_uri_prefix: 'gs://brt-pipeline-data/' 
             format: csv
             skip_leading_rows: 1
-          partitions:               
-            - name: date
-              data_type: date
+          #partitions:               
+          #  - name: date
+          #    data_type: date
         columns: 
           - name: codigo
             data_type: string
