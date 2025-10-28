@@ -13,32 +13,39 @@ Construção de um pipeline de dados ELT, orquestrado com Prefect, que:
 - CSV de exemplo + capturas de tela das tabelas: `examples/`
 
 ## Instruções de execução
-1. **Clonar este repositório**
-Executar os comandos:
-git clone https://github.com/usuario/prefeitura-brt-pipeline.git
-cd prefeitura-brt-pipeline
+1. **Clonar este repositório**  
 
+   Execute os seguintes comandos no terminal:
+
+   ```bash
+   git clone https://github.com/jorgeasmendes/prefeitura-brt-pipeline.git
+   cd prefeitura-brt-pipeline
 2. **Adicionar chave GCP**
 - Gere uma chave JSON da sua conta de serviço no GCP
 - Permissões necessárias: Storage Admin e BigQuery Admin
-- Mude o nome do arquivo para key.json e coloque na pasta gcp_key/
+- Mude o nome do arquivo para `key.json` e coloque na pasta `gcp_key/`
 
 3. **Configurar o Docker**
-Abra o Dockerfile e altere a variável de ambiente GCP_PROJECT para o ID do seu projeto. 
+
+    Abra o Dockerfile e altere a variável de ambiente GCP_PROJECT para o ID do seu projeto. 
 
 4. **Instalar dependências e rodar servidor Prefect**
-- Em um terminal na pasta raiz, rodar os seguintes comandos:
-pip install marshmallow>=3,<4 prefect[github]==1.4.1
-docker build -t brt-job-run .
-prefect backend server
-prefect server start
 
+    Em um terminal na pasta raiz, rodar os seguintes comandos:
+
+    ```bash
+    pip install marshmallow>=3,<4 prefect[github]==1.4.1
+    docker build -t brt-job-run .
+    prefect backend server
+    prefect server start
 5. **Registrar o pipeline e ativar o agent**
-- Aguarde o servidor iniciar, abra outro terminal na pasta raiz e rode os comandos:
-prefect create project brt-pipeline
-prefect register --project brt-pipeline -p pipeline/flow.py
-prefect agent docker start
 
+    Aguarde o servidor iniciar, abra outro terminal na pasta raiz e rode os comandos:
+
+    ```bash
+    prefect create project brt-pipeline
+    prefect register --project brt-pipeline -p pipeline/flow.py
+    prefect agent docker start
 6. **Acessar a UI do Prefect e rodar o pipeline**
 - Abra o seu navegador e digite o endereço http://localhost:8080/
 - Vá em Flows → selecione brt-pipeline → clique em Quick Run
