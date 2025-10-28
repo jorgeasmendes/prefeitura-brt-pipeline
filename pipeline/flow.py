@@ -30,7 +30,7 @@ def download_data(i):
     
 @task(log_stdout=True)
 def api_to_csv():
-    for i in range(1,5):
+    for i in range(1,11):
         print(f"Começando iteração {i}...")
         dict_data = download_data(i)
         df = pd.DataFrame(dict_data["veiculos"])
@@ -38,7 +38,7 @@ def api_to_csv():
         file_exists = os.path.exists(CSV_FILENAME)
         df.to_csv(CSV_FILENAME, mode='a', index=False, header=not file_exists)
         print(f"Iteração {i} concluída")
-        time.sleep(10)
+        time.sleep(60)
 
 #Task para subir os dados para o Google Storage
 @task(log_stdout=True)
