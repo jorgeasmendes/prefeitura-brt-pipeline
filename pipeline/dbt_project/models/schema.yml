@@ -1,0 +1,127 @@
+models:
+  - name: brt_silver
+    description: |
+      View intermediária para carregar a tabela brt_gold com os registros novos. Filtra e normaliza as leituras das posições dos veículos do BRT da tabela brt_bronze, pegando apenas os últimos dias, de acordo com a variável dias_historico_brt_silver. 
+
+      Filtros aplicados:
+      - Remove duplicatas de capturas sem atualização de posição (se o veículo não teve novo registro desde a última captura, ela é sobrescrita)
+
+      Transformações:
+      - Converte os dados de data/hora de emissão da posição do veículo de Unix Time para DATETIME no fuso de Brasília
+      - Converte o campo ignicao de INTEGER (1 ou 0) para booleano
+      - Converte os demais campos para seus respectivos tipos (a tabela de origem tem todos os campos como STRING no seu schema para evitar erros de leitura caso algum campo venha diferente do esperado)
+
+      Obs: Para alterar a janela de tempo da view, basta colocar o número de dias para trás no parâmetro de execução. Por exemplo, se quiser 30 dias: dbt run --vars '{"dias_historico_brt_silver": 30}'
+    columns:
+      - name: codigo
+        description: "Identificador único do veículo."
+
+      - name: placa
+        description: "Placa do veículo. Contém valores nulos."
+
+      - name: linha
+        description: "Serviço operado pelo veículo - formato: XX (ex: 10), ou 0 = Fora de viagem."
+
+      - name: latitude
+        description: "Latitude da posição do veículo."
+
+      - name: longitude
+        description: "Longitude da posição do veículo."
+
+      - name: datahora_emissao_registro
+        description: "Data/hora da posição do veículo no fuso horário de Brasília."
+
+      - name: velocidade
+        description: "Velocidade instantânea do veículo."
+
+      - name: id_migracao_trajeto
+        description: "Identificador interno. Contém valores nulos."
+
+      - name: sentido
+        description: "Sentido da viagem operada pelo veículo (categorias: ida, volta)."
+
+      - name: trajeto
+        description: "Descrição do serviço e sentido operado pelo veículo."
+
+      - name: hodometro
+        description: "Hodômetro do veículo."
+
+      - name: direcao
+        description: "Direção do veículo em graus (0 a 360)."
+
+      - name: ignicao
+        description: "Carro está com ignição ligada."
+
+      - name: capacidade_passageiros_pe
+        description: "Capacidade de passageiros em pé no veículo. Não utilizada - todos os registros estão com valor 0."
+
+      - name: capacidade_passageiros_sentados
+        description: "Capacidade de passageiros sentados no veículo. Não utilizada - todos os registros estão com valor 0."
+
+      - name: datahora_captura_registro
+        description: "Data/hora da captura do registro no fuso horário de Brasília."
+
+      - name: data_captura_registro
+        description: "Data da captura do registro. Coluna usada para partição da tabela de origem."
+
+ 
+  - name: brt_gold
+    description: |
+      Tabela com materialização das leituras das posições dos veículos do BRT, particionada pela data da captura do registro e pronta para análises.
+
+      Testes:
+      - Registro único de veículo por horário (Chave primária composta: código do veículo e horário de emissão do registro)
+      - Verificação de registros com chave primária nula
+
+      Transformações:
+      - Exclui as colunas não utilizadas
+      - Cria chave primária concatenando codigo e datahora_emissao_registro
+
+    columns:
+      - name: codigo
+        description: "Identificador único do veículo."
+
+      - name: placa
+        description: "Placa do veículo. Contém valores nulos."
+
+      - name: linha
+        description: "Serviço operado pelo veículo - formato: XX (ex: 10), ou 0 = Fora de viagem."
+
+      - name: latitude
+        description: "Latitude da posição do veículo."
+
+      - name: longitude
+        description: "Longitude da posição do veículo."
+
+      - name: datahora_emissao_registro
+        description: "Data/hora da posição do veículo no fuso horário de Brasília."
+
+      - name: velocidade
+        description: "Velocidade instantânea do veículo."
+
+      - name: id_migracao_trajeto
+        description: "Identificador interno. Contém valores nulos."
+
+      - name: sentido
+        description: "Sentido da viagem operada pelo veículo (categorias: ida, volta)."
+
+      - name: trajeto
+        description: "Descrição do serviço e sentido operado pelo veículo."
+
+      - name: hodometro
+        description: "Hodômetro do veículo."
+
+      - name: direcao
+        description: "Direção do veículo em graus (0 a 360)."
+
+      - name: ignicao
+        description: "Carro está com ignição ligada."
+
+      - name: datahora_captura_registro
+        description: "Data/hora da captura do registro no fuso horário de Brasília. Coluna da partição."
+
+      - name: codigo_datahora
+        description: "Chave primária concatenando colunas: codigo e datahora_emissao_registro"
+        data_tests:
+          - not_null
+          - unique
