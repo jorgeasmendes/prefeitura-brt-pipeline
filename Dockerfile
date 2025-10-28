@@ -10,6 +10,6 @@ COPY gcp_key/key.json /gcp_key/key.json
 
 ENV GOOGLE_APPLICATION_CREDENTIALS=/gcp_key/key.json
 
-ENV BIGQUERY_DATASET="brt_dataset"
+ENV BIGQUERY_DATASET=brt_dataset
 
-ENV GCP_PROJECT="estudo_elt"
+ENV GCP_PROJECT=estudo-elt

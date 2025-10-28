@@ -5,8 +5,7 @@ dbt_project:
       job_execution_timeout_seconds: 300
       job_retries: 1
       location: US
-      method: service-account-json
-      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
+      method: oauth
       priority: interactive
       project: "{{ env_var('GCP_PROJECT')}}"
       threads: 1
