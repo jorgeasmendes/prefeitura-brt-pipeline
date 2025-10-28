@@ -7,11 +7,13 @@ from datetime import datetime
 import pytz
 import time
 import os
-from google.cloud import storage
+from google.cloud import storage, bigquery
+from google.api_core.exceptions import NotFound
 
 formated_timestamp = datetime.now(pytz.timezone('America/Sao_Paulo')).strftime("%Y%m%d_%H%M%S")
 CSV_FILENAME = f"brt-dados-{formated_timestamp}.csv"
 BUCKET_NAME = "brt-pipeline-data"
+DATASET_NAME = "brt_dataset"
 
 #Task para baixar os dados da API e salvar em csv com função auxiliar
 def download_data(i):
@@ -60,12 +62,34 @@ def upload_csv(bucket_name):
         print(f"Erro ao fazer upload dos dados: {e}")
         return False
 
+#Funções para rodar DBT materializando dados do bucket no BigQuery
+def create_dataset():
+    try:
+        client = bigquery.Client()
+        dataset_ref = client.dataset(DATASET_NAME)
+        dataset = bigquery.Dataset(dataset_ref)
+        client.create_dataset(dataset, exists_ok=True)
+        print("Dataset OK")
+        return True
+    except Exception as e:
+        print(f"Erro ao acessar ou criar dataset: {e}")
+        return False
+@task(log_stdout=True)
+def dbt_run():
+    if create_dataset():
+        print("Rodando DBT...")
+    else:
+        print("Execução do DBT abortada")
+
 
 with Flow("brt-pipeline") as flow:
     download_data_from_api = api_to_csv()
     
     upload_data_togcp = upload_csv(BUCKET_NAME)
     upload_data_togcp.set_upstream(download_data_from_api)
+
+    run_dbt = dbt_run()
+    run_dbt.set_upstream(upload_data_togcp)
 
 flow.storage = GitHub(repo="jorgeasmendes/prefeitura-brt-pipeline",path="pipeline/flow.py")
 flow.run_config = DockerRun(image="brt-job-run")
