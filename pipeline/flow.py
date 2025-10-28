@@ -18,7 +18,7 @@ def download_data(i):
     try:
         response = requests.get("https://dados.mobilidade.rio/gps/brt")
         response.raise_for_status()
-    except response.status_code() as e:
+    except requests.RequestException as e:
         print(f"Erro ao fazer download de número {i}, código: {e}")
         return None
     else:
@@ -50,13 +50,14 @@ def upload_csv(bucket_name):
         print("Bucket criado")
     
     print(f"Preparando upload de {CSV_FILENAME} para gs://{bucket.name}/")
-    blob = bucket.blob(CSV_FILENAME)
+    blob_str = f"{datetime.now(pytz.timezone('America/Sao_Paulo')).strftime('%Y/%m/%d')}/{CSV_FILENAME}"
+    blob = bucket.blob(blob_str)
     try:
         blob.upload_from_filename(CSV_FILENAME)
-        print(f"Upload concluído: gs://{bucket.name}/{CSV_FILENAME}")
+        print(f"Upload concluído: gs://{bucket.name}/{blob_str}")
         return True
-    except:
-        print("Erro ao fazer upload dos dados")
+    except Exception as e:
+        print(f"Erro ao fazer upload dos dados: {e}")
         return False
 
 
