@@ -33,7 +33,7 @@ def api_to_csv():
         df = pd.DataFrame(dict_data["veiculos"])
         df["datetime_registro"] = datetime.now(pytz.timezone('America/Sao_Paulo'))
         file_exists = os.path.exists(CSV_FILENAME)
-        df.to_csv("brt-dados.csv", mode='a', index=False, header=not file_exists)
+        df.to_csv(CSV_FILENAME, mode='a', index=False, header=not file_exists)
         print(f"Iteração {i} concluída")
         time.sleep(10)
 
