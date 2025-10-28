@@ -25,9 +25,9 @@ Construção de um pipeline de dados ELT, orquestrado com Prefect, que:
 - Permissões necessárias: Storage Admin e BigQuery Admin
 - Mude o nome do arquivo para `key.json` e coloque na pasta `gcp_key/`
 
-3. **Configurar o Docker**
+3. **Configurar as variáveis de ambiente**
 
-    Abra o Dockerfile e altere a variável de ambiente GCP_PROJECT para o ID do seu projeto. 
+    Abra o Dockerfile e altere a variável de ambiente GCP_PROJECT para o ID do seu projeto e a variável GCS_BUCKET para o nome do bucket que você quer usar ou criar no seu projeto.
 
 4. **Instalar dependências e rodar servidor Prefect**
 

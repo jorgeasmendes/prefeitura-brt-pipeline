@@ -3,9 +3,9 @@ sources:
     tables:
       - name: brt_bronze
         external:
-          location: "gs://brt-pipeline-data/*"
+          location: "gs://{{ env_var('GCS_BUCKET') }}/*"
           options:
-            hive_partition_uri_prefix: "gs://brt-pipeline-data" 
+            hive_partition_uri_prefix: "gs://{{ env_var('GCS_BUCKET') }}" 
             format: csv
             skip_leading_rows: 1
           partitions:               

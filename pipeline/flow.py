@@ -13,8 +13,8 @@ from google.cloud import storage, bigquery
 
 formated_timestamp = datetime.now(pytz.timezone('America/Sao_Paulo')).strftime("%Y%m%d_%H%M%S")
 CSV_FILENAME = f"brt-dados-{formated_timestamp}.csv"
-BUCKET_NAME = "brt-pipeline-data"
-DATASET_NAME = os.getenv("BIGQUERY_DATASET", "brt_dataset")
+BUCKET_NAME = os.getenv("GCS_BUCKET")
+DATASET_NAME = os.getenv("BIGQUERY_DATASET")
 
 #Task para baixar os dados da API e salvar em csv com função auxiliar
 def download_data(i):
