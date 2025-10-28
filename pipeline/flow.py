@@ -1,5 +1,5 @@
 from prefect import Flow, task
-from prefect.storage import GitHub, Docker
+from prefect.storage import GitHub
 from prefect.run_configs import DockerRun
 import requests
 import pandas as pd
