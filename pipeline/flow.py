@@ -9,7 +9,8 @@ import time
 import os
 from google.cloud import storage
 
-CSV_FILENAME = f"brt-dados-{datetime.now(pytz.timezone('America/Sao_Paulo'))}.csv"
+formated_timestamp = datetime.now(pytz.timezone('America/Sao_Paulo')).strftime("%Y%m%d_%H%M%S")
+CSV_FILENAME = f"brt-dados-{formated_timestamp}.csv"
 BUCKET_NAME = "brt-pipeline-data"
 
 #Task para baixar os dados da API e salvar em csv com função auxiliar
@@ -24,7 +25,7 @@ def download_data(i):
         print(f"Download da iteração {i} realizado com sucesso")
         return response.json()
     
-@task
+@task(log_stdout=True)
 def api_to_csv():
     for i in range(1,5):
         print(f"Começando iteração {i}...")
@@ -37,7 +38,7 @@ def api_to_csv():
         time.sleep(10)
 
 #Task para subir os dados para o Google Storage
-@task
+@task(log_stdout=True)
 def upload_csv(bucket_name):
     client = storage.Client()
     bucket = client.bucket(bucket_name)
