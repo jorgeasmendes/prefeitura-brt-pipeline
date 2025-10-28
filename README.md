@@ -34,7 +34,7 @@ Construção de um pipeline de dados ELT, orquestrado com Prefect, que:
     Em um terminal na pasta raiz, rodar os seguintes comandos:
 
     ```bash
-    pip install marshmallow>=3,<4 prefect[github]==1.4.1
+    pip install -r requirements.txt
     docker build -t brt-job-run .
     prefect backend server
     prefect server start

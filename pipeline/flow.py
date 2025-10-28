@@ -83,7 +83,7 @@ def dbt_run():
         try:
             subprocess.run(["dbt", "deps"], check=True)
             subprocess.run(["dbt", "run-operation", "stage_external_sources"], check=True)
-            subprocess.run(["dbt", "run"], check=True)
+            subprocess.run(["dbt", "build"], check=True)
         except Exception as e:
             print(f"Erro ao rodar DBT: {e}")
     else:
