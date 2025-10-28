@@ -1,5 +1,6 @@
 from prefect import Flow, task
 from prefect.storage import GitHub
+from prefect.run_configs import DockerRun
 import requests
 import pandas as pd
 from datetime import datetime
@@ -36,3 +37,4 @@ with Flow("brt-pipeline") as flow:
     api_to_csv()
 
 flow.storage = GitHub(repo="jorgeasmendes/prefeitura-brt-pipeline",path="pipeline/flow.py")
+flow.run_config = DockerRun(env={"EXTRA_PIP_PACKAGES": "pandas==1.5.3"})
