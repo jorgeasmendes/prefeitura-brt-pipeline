@@ -4,6 +4,10 @@ COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY gcp_key/key.json .
+COPY pipeline/dbt_project /dbt_project
 
-ENV GOOGLE_APPLICATION_CREDENTIALS=key.json
+COPY gcp_key/key.json /gcp_key/key.json
+
+ENV GOOGLE_APPLICATION_CREDENTIALS=/gcp_key/key.json
+
+ENV BIGQUERY_DATASET="brt_dataset"

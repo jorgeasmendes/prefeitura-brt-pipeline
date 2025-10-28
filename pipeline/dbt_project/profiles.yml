@@ -1,0 +1,13 @@
+dbt_project:
+  outputs:
+    dev:
+      dataset: "{{ env_var('BIGQUERY_DATASET')}}"
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      location: US
+      method: service-account-json
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
+      priority: interactive
+      threads: 1
+      type: bigquery
+  target: dev

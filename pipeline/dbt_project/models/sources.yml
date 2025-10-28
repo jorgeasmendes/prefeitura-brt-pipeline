@@ -1,0 +1,47 @@
+sources:
+  - name: brt_dataset
+    tables:
+      - name: brt_bronze
+        external:
+          location: "gs://brt-pipeline-data/date=*/brt-dados-*.csv"
+          options:
+            hive_partition_uri_prefix: 'gs://brt-pipeline-data/' 
+            format: csv
+            skip_leading_rows: 1
+          partitions:               
+            - name: date
+              data_type: date
+        columns: 
+          - name: codigo
+            data_type: string
+          - name: placa
+            data_type: string
+          - name: linha
+            data_type: string
+          - name: latitude
+            data_type: string
+          - name: longitude
+            data_type: string
+          - name: dataHora
+            data_type: string
+          - name: velocidade
+            data_type: string
+          - name: id_migracao_trajeto
+            data_type: string
+          - name: sentido
+            data_type: string
+          - name: trajeto
+            data_type: string
+          - name: hodometro
+            data_type: string
+          - name: direcao
+            data_type: string
+          - name: ignicao
+            data_type: string
+          - name: capacidadePeVeiculo
+            data_type: string
+          - name: capacidadeSentadoVeiculo
+            data_type: string
+          - name: datetime_registro
+            data_type: string
+

@@ -7,13 +7,14 @@ from datetime import datetime
 import pytz
 import time
 import os
+import subprocess
 from google.cloud import storage, bigquery
-from google.api_core.exceptions import NotFound
+
 
 formated_timestamp = datetime.now(pytz.timezone('America/Sao_Paulo')).strftime("%Y%m%d_%H%M%S")
 CSV_FILENAME = f"brt-dados-{formated_timestamp}.csv"
 BUCKET_NAME = "brt-pipeline-data"
-DATASET_NAME = "brt_dataset"
+DATASET_NAME = os.getenv("BIGQUERY_DATASET", "brt_dataset")
 
 #Task para baixar os dados da API e salvar em csv com função auxiliar
 def download_data(i):
@@ -52,7 +53,7 @@ def upload_csv(bucket_name):
         print("Bucket criado")
     
     print(f"Preparando upload de {CSV_FILENAME} para gs://{bucket.name}/")
-    blob_str = f"{datetime.now(pytz.timezone('America/Sao_Paulo')).strftime('%Y/%m/%d')}/{CSV_FILENAME}"
+    blob_str = f"date={datetime.now(pytz.timezone('America/Sao_Paulo')).strftime('%Y-%m-%d')}/{CSV_FILENAME}"
     blob = bucket.blob(blob_str)
     try:
         blob.upload_from_filename(CSV_FILENAME)
@@ -78,6 +79,13 @@ def create_dataset():
 def dbt_run():
     if create_dataset():
         print("Rodando DBT...")
+        os.chdir("/dbt_project")
+        try:
+            subprocess.run(["dbt", "deps"], check=True)
+            subprocess.run(["dbt", "run-operation", "stage_external_sources"], check=True)
+            subprocess.run(["dbt", "run"], check=True)
+        except Exception as e:
+            print(f"Erro ao rodar DBT: {e}")
     else:
         print("Execução do DBT abortada")
 
