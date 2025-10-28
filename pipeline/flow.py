@@ -45,7 +45,7 @@ def upload_csv(bucket_name):
         print("Bucket já existe")
     else: 
         print("O bucket ainda não existe. Criando bucket...")
-        bucket = bucket.create(bucket_name, location="US")
+        bucket = client.create_bucket(bucket_name, location="US")
         print("Bucket criado")
     
     print(f"Preparando upload de {CSV_FILENAME} para gs://{bucket.name}/")
