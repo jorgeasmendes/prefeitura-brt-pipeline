@@ -101,7 +101,7 @@ def dbt_run(dbt_filter):
                 if result.stderr:
                     logger.error(result.stderr)
             logger.info("Execução do DBT concluída com sucesso")
-        except Exception as e:
+        except subprocess.CalledProcessError as e:
             logger.error(f"Erro ao rodar DBT: {e}")
     else:
         logger.info("Execução do DBT abortada")
