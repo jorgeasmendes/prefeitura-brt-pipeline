@@ -93,7 +93,7 @@ def dbt_run(dbt_filter):
         try:
             commands = [["dbt", "deps"], 
                         ["dbt", "run-operation", "stage_external_sources"], 
-                        ["dbt", "build", "--vars", f"'{{dias_historico_brt_silver: {dbt_filter}}}'"]]
+                        ["dbt", "build", "--vars", f"{{dias_historico_brt_silver: {dbt_filter}}}"]]
             for cmd in commands:
                 result = subprocess.run(cmd, check=True, capture_output=True, text=True)
                 if result.stdout:

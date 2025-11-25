@@ -22,7 +22,7 @@ SELECT
     SAFE_CAST(capacidadeSentadoVeiculo AS INT64) AS capacidade_passageiros_sentados,
     DATETIME(SAFE.PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%E6S%Ez', datetime_registro), 'America/Sao_Paulo') AS datahora_captura_registro,
     date AS data_captura_registro
-FROM {{ source('brt_dataset', 'brt_bronze')}} WHERE date >= DATE_SUB(CURRENT_DATE(), INTERVAL {{ var('dias_historico_brt_silver')}} DAY)
+FROM {{ source('brt_dataset', 'brt_bronze')}} WHERE date >= DATE_SUB(CURRENT_DATE(), INTERVAL {{ var('dias_historico_brt_silver') | int }} DAY)
 QUALIFY ROW_NUMBER() OVER (
     PARTITION BY codigo, datahora_emissao_registro
     ORDER BY datahora_captura_registro DESC) = 1

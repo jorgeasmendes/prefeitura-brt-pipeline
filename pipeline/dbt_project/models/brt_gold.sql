@@ -7,7 +7,7 @@
         "data_type": "date"
         },
         cluster_by=["linha","codigo"],
-        merge_update_partition_filter="DATE(datahora_captura_registro) >= DATE_SUB(CURRENT_DATE(), INTERVAL {{ var('dias_historico_brt_silver') }} DAY)"
+        merge_update_partition_filter="DATE(datahora_captura_registro) >= DATE_SUB(CURRENT_DATE(), INTERVAL {{ var('dias_historico_brt_silver') | int }} DAY)"
     )
 }}
 
